@@ -40,12 +40,28 @@ public class Main {
             userService.resetPassword("john@example.com", "NewSecret@123");
             userService.logout();
 
-            // 6. Login with new password
+            // UC1 Login with new password
             System.out.println("Logging in with new password...");
             userService.login("john@example.com", "NewSecret@123", false);
 
-            // 7. Deactivate account
-            System.out.println("Deactivating account...");
+            System.out.println("\n--- UC2: User Profile Management ---");
+            // 1. Set travel & communication preferences
+            System.out.println("Setting preferences...");
+            userService.updatePreferences("Vegetarian", "Window", "None", true, false);
+
+            // 2. Add emergency contact
+            System.out.println("Adding emergency contact...");
+            userService.updateEmergencyContact("Jane Doe", "1122334455", "Spouse");
+
+            // 3. Add passenger profile (family member)
+            System.out.println("Adding family member profile...");
+            userService.addPassengerProfile("P001", "Jane Doe", LocalDate.of(1992, 5, 10), "PASS456");
+
+            // 4. View complete profile
+            userService.viewProfile();
+
+            // UC1 Deactivate account
+            System.out.println("\nDeactivating account...");
             userService.deactivateAccount();
 
         } catch (Exception e) {

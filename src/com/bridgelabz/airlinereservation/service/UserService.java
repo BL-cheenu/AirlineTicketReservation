@@ -105,6 +105,37 @@ public class UserService {
         System.out.println("Account deactivated.");
     }
     
+    // UC2 Profile Management
+    public void updatePreferences(String mealType, String seatPreference, String specialAssistance, boolean emailNotifications, boolean smsNotifications) throws UserException {
+        if (loggedInUser == null) throw new UserException("Must be logged in to update preferences.");
+        loggedInUser.getPreferences().setMealType(mealType);
+        loggedInUser.getPreferences().setSeatPreference(seatPreference);
+        loggedInUser.getPreferences().setSpecialAssistance(specialAssistance);
+        loggedInUser.getPreferences().setEmailNotifications(emailNotifications);
+        loggedInUser.getPreferences().setSmsNotifications(smsNotifications);
+        System.out.println("Preferences updated successfully.");
+    }
+
+    public void updateEmergencyContact(String name, String phone, String relation) throws UserException {
+        if (loggedInUser == null) throw new UserException("Must be logged in to update emergency contact.");
+        com.bridgelabz.airlinereservation.model.EmergencyContact contact = new com.bridgelabz.airlinereservation.model.EmergencyContact(name, phone, relation);
+        loggedInUser.setEmergencyContact(contact);
+        System.out.println("Emergency contact updated successfully.");
+    }
+
+    public void addPassengerProfile(String profileId, String name, LocalDate dateOfBirth, String passportOrId) throws UserException {
+        if (loggedInUser == null) throw new UserException("Must be logged in to add passenger profile.");
+        com.bridgelabz.airlinereservation.model.PassengerProfile profile = new com.bridgelabz.airlinereservation.model.PassengerProfile(profileId, name, dateOfBirth, passportOrId);
+        loggedInUser.addPassengerProfile(profile);
+        System.out.println("Passenger profile added successfully.");
+    }
+
+    public void viewProfile() throws UserException {
+        if (loggedInUser == null) throw new UserException("Must be logged in to view profile.");
+        System.out.println("--- User Profile ---");
+        System.out.println(loggedInUser.toString());
+    }
+
     public User getLoggedInUser() {
         return loggedInUser;
     }
