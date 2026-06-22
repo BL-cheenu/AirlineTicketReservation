@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class User {
+public abstract class User {
     private String id;
     private String name;
     private String email;
@@ -35,6 +35,12 @@ public class User {
         this.preferences = new Preferences();
         this.passengerProfiles = new ArrayList<>();
     }
+
+    // UC3: Abstract permission methods
+    public abstract boolean canManageUsers();
+    public abstract boolean canManageFlights();
+    public abstract boolean canManageAllBookings();
+
 
     // Getters and Setters
     public String getId() { return id; }
