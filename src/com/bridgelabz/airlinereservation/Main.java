@@ -64,6 +64,25 @@ public class Main {
             System.out.println("\nDeactivating account...");
             userService.deactivateAccount();
 
+            System.out.println("\n--- UC3: User Role Management ---");
+            // 1. Register Admin
+            User admin = userService.registerUser("Admin User", "admin@airline.com", "1112223333",
+                    LocalDate.of(1985, 1, 1), "ADM001", "Admin@123", Role.ADMIN);
+            
+            // 2. Validate Polymorphic Permissions
+            System.out.println("Admin Permissions:");
+            System.out.println("Can Manage Users? " + admin.canManageUsers());
+            System.out.println("Can Manage Flights? " + admin.canManageFlights());
+            System.out.println("Can Manage All Bookings? " + admin.canManageAllBookings());
+
+            User passenger2 = userService.registerUser("Passenger Two", "pass2@airline.com", "4445556666",
+                    LocalDate.of(1995, 1, 1), "PASS002", "Pass@123", Role.PASSENGER);
+            
+            System.out.println("\nPassenger Permissions:");
+            System.out.println("Can Manage Users? " + passenger2.canManageUsers());
+            System.out.println("Can Manage Flights? " + passenger2.canManageFlights());
+            System.out.println("Can Manage All Bookings? " + passenger2.canManageAllBookings());
+
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
         }

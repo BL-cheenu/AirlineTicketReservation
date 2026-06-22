@@ -28,7 +28,20 @@ public class UserService {
         
         String id = UUID.randomUUID().toString();
         String hashedPassword = encryptPassword(password);
-        User user = new User(id, name, email, phone, dateOfBirth, passportOrId, hashedPassword, role);
+        
+        User user;
+        switch (role) {
+            case ADMIN:
+                user = new com.bridgelabz.airlinereservation.model.Admin(id, name, email, phone, dateOfBirth, passportOrId, hashedPassword);
+                break;
+            case AIRLINE_STAFF:
+                user = new com.bridgelabz.airlinereservation.model.AirlineStaff(id, name, email, phone, dateOfBirth, passportOrId, hashedPassword);
+                break;
+            case PASSENGER:
+            default:
+                user = new com.bridgelabz.airlinereservation.model.Passenger(id, name, email, phone, dateOfBirth, passportOrId, hashedPassword);
+                break;
+        }
         
         userDatabase.put(id, user);
         
