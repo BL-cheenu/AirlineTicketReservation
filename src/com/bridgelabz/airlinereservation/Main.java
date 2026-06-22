@@ -183,6 +183,18 @@ public class Main {
                 
                 // Test Full Cancellation
                 cancellationService.cancelFullBooking(booking);
+
+                System.out.println("\n--- UC24, UC25, UC26: Flight Management ---");
+                Flight newFlight = new Flight("FL777", "TestAir", "NYC", "SFO", LocalDate.now().plusDays(5).atTime(10,0), LocalDate.now().plusDays(5).atTime(14,0), 240, 5000.0, 150, new java.util.HashMap<>());
+                flightService.addFlight(newFlight);
+                
+                newFlight.setPrice(4500.0);
+                flightService.updateFlight("FL777", newFlight);
+                
+                List<Flight> activeFlights = flightService.getFlightsByStatus(FlightStatus.SCHEDULED);
+                System.out.println("Active SCHEDULED flights count: " + activeFlights.size());
+                
+                flightService.removeFlight("FL777");
             } else {
                 System.out.println("No flights found or no user logged in to test booking.");
             }
