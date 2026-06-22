@@ -1,10 +1,13 @@
 package com.bridgelabz.airlinereservation;
 
-import com.bridgelabz.airlinereservation.model.Role;
-import com.bridgelabz.airlinereservation.model.User;
+import com.bridgelabz.airlinereservation.model.*;
 import com.bridgelabz.airlinereservation.service.UserService;
+import com.bridgelabz.airlinereservation.service.FlightService;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class Main {
@@ -82,6 +85,32 @@ public class Main {
             System.out.println("Can Manage Users? " + passenger2.canManageUsers());
             System.out.println("Can Manage Flights? " + passenger2.canManageFlights());
             System.out.println("Can Manage All Bookings? " + passenger2.canManageAllBookings());
+
+            System.out.println("\n--- UC4 & UC5: Flight Search and Information Display ---");
+            FlightService flightService = new FlightService();
+            FlightSearchCriteria criteria = new FlightSearchCriteria("DEL", "BOM", LocalDate.now().plusDays(1));
+            
+            System.out.println("Searching flights DEL -> BOM for tomorrow...");
+            List<Flight> searchResults = flightService.searchFlights(criteria);
+            
+            System.out.println("\nSorting by Price...");
+            flightService.sortFlightsByPrice(searchResults);
+            flightService.displayFlights(searchResults);
+
+            if (!searchResults.isEmpty()) {
+                System.out.println("\nDisplaying detailed view for the first flight:");
+                flightService.displayFlightDetails(searchResults.get(0));
+            }
+
+            System.out.println("\n--- UC6: Advanced Search Features (Streams with groupingBy) ---");
+            Map<String, List<Flight>> groupedByAirline = flightService.groupFlightsByAirline(searchResults);
+            System.out.println("Grouped by Airline: " + groupedByAirline.keySet());
+
+            Map<String, Double> avgFare = flightService.getAverageFareByAirline(searchResults);
+            System.out.println("Average Fare by Airline: " + avgFare);
+
+            Optional<Flight> cheapest = flightService.getCheapestFlight(searchResults);
+            cheapest.ifPresent(f -> System.out.println("Cheapest Flight: " + f.getFlightNumber() + " @ Rs " + f.getPrice()));
 
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
