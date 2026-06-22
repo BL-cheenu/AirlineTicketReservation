@@ -142,6 +142,18 @@ public class Main {
                 System.out.println("\n--- UC11: Booking Confirmation ---");
                 bookingService.confirmBooking(booking);
                 booking.printState(); // State: CONFIRMED
+
+                System.out.println("\n--- UC12: Booking Retrieval and Display ---");
+                String pnr = booking.getPnr();
+                System.out.println("Retrieving booking by PNR: " + pnr);
+                Optional<Booking> retrievedBooking = bookingService.getBookingByPnr(pnr);
+                retrievedBooking.ifPresent(bookingService::displayBookingDetails);
+                
+                System.out.println("\nGenerating E-Ticket...");
+                bookingService.generateETicketPDF(booking);
+
+                System.out.println("\n--- UC13: Booking History Management ---");
+                bookingService.displayBookingHistory(userService.getLoggedInUser());
             } else {
                 System.out.println("No flights found or no user logged in to test booking.");
             }

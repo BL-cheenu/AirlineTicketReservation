@@ -4,9 +4,11 @@ import com.bridgelabz.airlinereservation.model.Booking;
 import com.bridgelabz.airlinereservation.model.Flight;
 import com.bridgelabz.airlinereservation.model.PassengerProfile;
 import com.bridgelabz.airlinereservation.model.User;
+import com.bridgelabz.airlinereservation.model.TravelClass;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class BookingService {
     private List<Booking> allBookings = new ArrayList<>();
@@ -70,5 +72,57 @@ public class BookingService {
         
         System.out.println("Booking confirmed! E-Ticket: " + eTicket);
         System.out.println("Notifications sent to user: " + booking.getBookedBy().getEmail());
+    }
+
+    // UC12: Booking Retrieval and Display
+    public Optional<Booking> getBookingByPnr(String pnr) {
+        return allBookings.stream().filter(b -> b.getPnr().equalsIgnoreCase(pnr)).findFirst();
+    }
+
+    public Optional<Booking> getBookingByETicket(String eTicket) {
+        return allBookings.stream()
+                .filter(b -> b.geteTicketNumber() != null && b.geteTicketNumber().equalsIgnoreCase(eTicket))
+                .findFirst();
+    }
+
+    public void displayBookingDetails(Booking booking) {
+        System.out.println("--- Booking Details ---");
+        System.out.println("PNR: " + booking.getPnr());
+        System.out.println("E-Ticket: " + (booking.geteTicketNumber() != null ? booking.geteTicketNumber() : "Pending"));
+        System.out.println("Flight: " + booking.getFlight().getFlightNumber() + " (" + booking.getFlight().getAirline() + ")");
+        System.out.println("Date: " + booking.getFlight().getDepartureTime());
+        System.out.println("Status: ");
+        booking.printState();
+        System.out.println("Total Fare: Rs " + booking.getTotalFare());
+        System.out.println("Passengers:");
+        booking.getPassengers().forEach(p -> System.out.println("  - " + p.getName() + " (ID: " + p.getPassportOrId() + ")"));
+    }
+
+    public void generateETicketPDF(Booking booking) {
+        if (booking.geteTicketNumber() == null) {
+            System.out.println("Cannot generate PDF: Ticket not confirmed.");
+            return;
+        }
+        System.out.println("Generating E-Ticket PDF for " + booking.getPnr() + "...");
+        System.out.println("PDF saved successfully (Simulated).");
+    }
+
+    // UC13: Booking History Management
+    public List<Booking> getBookingHistory(User user) {
+        return allBookings.stream()
+                .filter(b -> b.getBookedBy().getId().equals(user.getId()))
+                .toList();
+    }
+
+    public void displayBookingHistory(User user) {
+        List<Booking> history = getBookingHistory(user);
+        if (history.isEmpty()) {
+            System.out.println("No booking history found for user " + user.getName());
+            return;
+        }
+        System.out.println("--- Booking History for " + user.getName() + " ---");
+        history.stream()
+               .sorted((b1, b2) -> b2.getFlight().getDepartureTime().compareTo(b1.getFlight().getDepartureTime()))
+               .forEach(b -> System.out.println(b.getPnr() + " | Flight: " + b.getFlight().getFlightNumber() + " | Date: " + b.getFlight().getDepartureTime().toLocalDate() + " | Fare: Rs " + b.getTotalFare()));
     }
 }
