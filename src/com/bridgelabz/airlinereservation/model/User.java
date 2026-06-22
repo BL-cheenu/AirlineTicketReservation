@@ -1,6 +1,8 @@
 package com.bridgelabz.airlinereservation.model;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class User {
     private String id;
@@ -14,6 +16,11 @@ public class User {
     private boolean isActive;
     private boolean isMfaEnabled;
 
+    // UC2 Fields
+    private Preferences preferences;
+    private EmergencyContact emergencyContact;
+    private List<PassengerProfile> passengerProfiles;
+
     public User(String id, String name, String email, String phone, LocalDate dateOfBirth, String passportOrId, String passwordHash, Role role) {
         this.id = id;
         this.name = name;
@@ -25,6 +32,8 @@ public class User {
         this.role = role;
         this.isActive = true;
         this.isMfaEnabled = false;
+        this.preferences = new Preferences();
+        this.passengerProfiles = new ArrayList<>();
     }
 
     // Getters and Setters
@@ -47,6 +56,13 @@ public class User {
     public void setActive(boolean active) { isActive = active; }
     public boolean isMfaEnabled() { return isMfaEnabled; }
     public void setMfaEnabled(boolean mfaEnabled) { isMfaEnabled = mfaEnabled; }
+    public Preferences getPreferences() { return preferences; }
+    public void setPreferences(Preferences preferences) { this.preferences = preferences; }
+    public EmergencyContact getEmergencyContact() { return emergencyContact; }
+    public void setEmergencyContact(EmergencyContact emergencyContact) { this.emergencyContact = emergencyContact; }
+    public List<PassengerProfile> getPassengerProfiles() { return passengerProfiles; }
+    public void setPassengerProfiles(List<PassengerProfile> passengerProfiles) { this.passengerProfiles = passengerProfiles; }
+    public void addPassengerProfile(PassengerProfile profile) { this.passengerProfiles.add(profile); }
 
     @Override
     public String toString() {
@@ -56,6 +72,9 @@ public class User {
                 ", email='" + email + '\'' +
                 ", role=" + role +
                 ", isActive=" + isActive +
+                ", preferences=" + preferences +
+                ", emergencyContact=" + emergencyContact +
+                ", passengerProfilesCount=" + passengerProfiles.size() +
                 '}';
     }
 }
