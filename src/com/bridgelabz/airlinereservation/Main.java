@@ -3,6 +3,7 @@ package com.bridgelabz.airlinereservation;
 import com.bridgelabz.airlinereservation.model.*;
 import com.bridgelabz.airlinereservation.service.UserService;
 import com.bridgelabz.airlinereservation.service.FlightService;
+import com.bridgelabz.airlinereservation.service.BookingService;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -63,9 +64,7 @@ public class Main {
             // 4. View complete profile
             userService.viewProfile();
 
-            // UC1 Deactivate account
-            System.out.println("\nDeactivating account...");
-            userService.deactivateAccount();
+            // Moved deactivate to end
 
             System.out.println("\n--- UC3: User Role Management ---");
             // 1. Register Admin
@@ -111,6 +110,34 @@ public class Main {
 
             Optional<Flight> cheapest = flightService.getCheapestFlight(searchResults);
             cheapest.ifPresent(f -> System.out.println("Cheapest Flight: " + f.getFlightNumber() + " @ Rs " + f.getPrice()));
+
+            System.out.println("\n--- UC9: Booking Creation (State Pattern) ---");
+            if (!searchResults.isEmpty() && userService.getLoggedInUser() != null) {
+                BookingService bookingService = new BookingService();
+                Flight selectedFlight = searchResults.get(0);
+                
+                System.out.println("Initiating booking for flight " + selectedFlight.getFlightNumber() + "...");
+                Booking booking = bookingService.initiateBooking(selectedFlight, userService.getLoggedInUser());
+                booking.printState(); // State: INITIATED
+                
+                bookingService.proceedToPassengerDetails(booking);
+                booking.printState(); // State: PASSENGER_DETAILS
+                
+                PassengerProfile pax = new PassengerProfile("PAX1", "John Doe", LocalDate.of(1990,1,1), "P123");
+                bookingService.addPassengerToBooking(booking, pax);
+                
+                bookingService.proceedToSeatSelection(booking);
+                booking.printState(); // State: SEAT_SELECTED
+                
+                bookingService.proceedToPayment(booking);
+                booking.printState(); // State: PAYMENT_PENDING
+            } else {
+                System.out.println("No flights found or no user logged in to test booking.");
+            }
+
+            // UC1 Deactivate account
+            System.out.println("\nDeactivating account...");
+            userService.deactivateAccount();
 
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
