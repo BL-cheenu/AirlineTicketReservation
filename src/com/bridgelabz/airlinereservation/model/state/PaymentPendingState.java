@@ -5,8 +5,7 @@ import com.bridgelabz.airlinereservation.model.Booking;
 public class PaymentPendingState implements BookingState {
     @Override
     public void next(Booking booking) {
-        // Will transition to Confirmed in a later UC
-        System.out.println("Transitioning to CONFIRMED (Not fully implemented yet).");
+        booking.setState(new ConfirmedState());
     }
 
     @Override
