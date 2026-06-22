@@ -195,6 +195,28 @@ public class Main {
                 System.out.println("Active SCHEDULED flights count: " + activeFlights.size());
                 
                 flightService.removeFlight("FL777");
+
+                System.out.println("\n--- UC27, UC28: Airport Management ---");
+                com.bridgelabz.airlinereservation.service.AirportService airportService = new com.bridgelabz.airlinereservation.service.AirportService();
+                Airport jfk = new Airport("JFK", "John F. Kennedy International", "New York", "USA");
+                airportService.addAirport(jfk);
+                airportService.addAirport(new Airport("LAX", "Los Angeles International", "Los Angeles", "USA"));
+                
+                List<Airport> searchResultsAirport = airportService.searchAirport("Los Angeles");
+                System.out.println("Search results for 'Los Angeles': " + searchResultsAirport.size() + " found.");
+
+                System.out.println("\n--- UC29: Priority Booking (PriorityQueue) ---");
+                com.bridgelabz.airlinereservation.service.PriorityBookingService pbs = new com.bridgelabz.airlinereservation.service.PriorityBookingService();
+                
+                com.bridgelabz.airlinereservation.model.User adminUser = userService.registerUser("admin1", "admin@test.com", "pass", null, null, null, com.bridgelabz.airlinereservation.model.Role.ADMIN);
+                Booking adminBooking = new Booking(selectedFlight, adminUser);
+                Booking paxBooking = booking; // the one we made earlier (Passenger)
+                
+                pbs.addBookingToQueue(paxBooking);
+                pbs.addBookingToQueue(adminBooking);
+                
+                pbs.processQueue();
+
             } else {
                 System.out.println("No flights found or no user logged in to test booking.");
             }
