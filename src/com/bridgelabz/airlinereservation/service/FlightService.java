@@ -2,6 +2,7 @@ package com.bridgelabz.airlinereservation.service;
 
 import com.bridgelabz.airlinereservation.model.Flight;
 import com.bridgelabz.airlinereservation.model.FlightSearchCriteria;
+import com.bridgelabz.airlinereservation.model.FlightStatus;
 import com.bridgelabz.airlinereservation.model.TravelClass;
 
 import java.time.LocalDateTime;
@@ -87,6 +88,49 @@ public class FlightService {
     }
 
     // UC6: Advanced Search Features (Streams with groupingBy)
+    public Map<Boolean, List<Flight>> partitionFlightsByDuration(int maxDurationMinutes, List<Flight> flights) {
+        return flights.stream()
+                .collect(Collectors.partitioningBy(f -> f.getDurationMinutes() <= maxDurationMinutes));
+    }
+
+    // UC24: Flight Creation and Setup
+    public void addFlight(Flight flight) {
+        if (flights.stream().anyMatch(f -> f.getFlightNumber().equalsIgnoreCase(flight.getFlightNumber()))) {
+            throw new IllegalArgumentException("Flight number already exists: " + flight.getFlightNumber());
+        }
+        flights.add(flight);
+        System.out.println("Flight added: " + flight.getFlightNumber());
+    }
+
+    // UC25: Flight Information Management
+    public void updateFlight(String flightNumber, Flight updatedFlight) {
+        Flight flight = flights.stream()
+                .filter(f -> f.getFlightNumber().equalsIgnoreCase(flightNumber))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Flight not found: " + flightNumber));
+        
+        flight.setDepartureTime(updatedFlight.getDepartureTime());
+        flight.setPrice(updatedFlight.getPrice());
+        flight.setStatus(updatedFlight.getStatus());
+        System.out.println("Flight updated: " + flightNumber);
+    }
+
+    public void removeFlight(String flightNumber) {
+        boolean removed = flights.removeIf(f -> f.getFlightNumber().equalsIgnoreCase(flightNumber));
+        if (removed) {
+            System.out.println("Flight removed: " + flightNumber);
+        } else {
+            System.out.println("Flight not found to remove: " + flightNumber);
+        }
+    }
+
+    // UC26: Flight Search and Filtering (Admin)
+    public List<Flight> getFlightsByStatus(FlightStatus status) {
+        return flights.stream()
+                .filter(f -> f.getStatus() == status)
+                .collect(Collectors.toList());
+    }
+
     public Map<String, List<Flight>> groupFlightsByAirline(List<Flight> flightsList) {
         return flightsList.stream()
                 .collect(Collectors.groupingBy(Flight::getAirline));
