@@ -139,11 +139,12 @@ public class Main {
                 bookingService.proceedToPayment(booking);
                 booking.printState(); // State: PAYMENT_PENDING
 
-                System.out.println("\n--- UC14: Payment Processing ---");
+                System.out.println("\n--- UC15 & UC16: Payment Processing Flow & Validation ---");
+                com.bridgelabz.airlinereservation.service.payment.PaymentService paymentService = new com.bridgelabz.airlinereservation.service.payment.PaymentService();
                 com.bridgelabz.airlinereservation.service.payment.PaymentMethod payment = new com.bridgelabz.airlinereservation.service.payment.UPIPayment("user@upi");
-                if (payment.processPayment(booking.getTotalFare())) {
-                    System.out.println("Payment Successful: " + payment.getPaymentDetails());
-                }
+                
+                String txnId = paymentService.processBookingPayment(booking, payment, "SAVE10");
+                System.out.println("Booking Payment processed successfully with Txn ID: " + txnId);
 
                 System.out.println("\n--- UC11: Booking Confirmation ---");
                 bookingService.confirmBooking(booking);
@@ -160,6 +161,10 @@ public class Main {
 
                 System.out.println("\n--- UC13: Booking History Management ---");
                 bookingService.displayBookingHistory(userService.getLoggedInUser());
+
+                System.out.println("\n--- UC17: Refund Processing ---");
+                String refundTxnId = paymentService.processRefund(booking, true);
+                System.out.println("Refund generated: " + refundTxnId);
             } else {
                 System.out.println("No flights found or no user logged in to test booking.");
             }
