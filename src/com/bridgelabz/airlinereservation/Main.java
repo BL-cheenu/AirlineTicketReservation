@@ -139,6 +139,12 @@ public class Main {
                 bookingService.proceedToPayment(booking);
                 booking.printState(); // State: PAYMENT_PENDING
 
+                System.out.println("\n--- UC14: Payment Processing ---");
+                com.bridgelabz.airlinereservation.service.payment.PaymentMethod payment = new com.bridgelabz.airlinereservation.service.payment.UPIPayment("user@upi");
+                if (payment.processPayment(booking.getTotalFare())) {
+                    System.out.println("Payment Successful: " + payment.getPaymentDetails());
+                }
+
                 System.out.println("\n--- UC11: Booking Confirmation ---");
                 bookingService.confirmBooking(booking);
                 booking.printState(); // State: CONFIRMED
