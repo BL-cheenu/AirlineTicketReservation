@@ -23,10 +23,31 @@ public class BookingService {
         booking.nextState();
     }
 
+    // UC10: Passenger Information Management
     public void addPassengerToBooking(Booking booking, PassengerProfile passenger) {
+        if (passenger.getName() == null || passenger.getName().isEmpty()) {
+            throw new IllegalArgumentException("Passenger name cannot be empty");
+        }
+        if (passenger.getPassportOrId() == null || passenger.getPassportOrId().isEmpty()) {
+            throw new IllegalArgumentException("Passport/ID is required");
+        }
         booking.addPassenger(passenger);
         booking.calculateTotalFare();
-        System.out.println("Added passenger: " + passenger.getName() + ". Total Fare: Rs " + booking.getTotalFare());
+        System.out.println("Added passenger: " + passenger.getName() + " (FFN: " + passenger.getFrequentFlyerNumber() + "). Total Fare: Rs " + booking.getTotalFare());
+    }
+
+    public void linkExistingPassengerProfile(Booking booking, User user, String profileId) {
+        PassengerProfile profile = user.getPassengerProfiles().stream()
+                .filter(p -> p.getProfileId().equals(profileId))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Profile not found in user account."));
+        addPassengerToBooking(booking, profile);
+        System.out.println("Linked existing profile to booking: " + profile.getName());
+    }
+
+    public void updatePassengerPreferences(Booking booking, String profileId, String mealPreference, String specialAssistance) {
+        // Just demonstrating the concept - in a real app we'd map this to the specific passenger in the booking
+        System.out.println("Updated preferences for passenger " + profileId + " -> Meal: " + mealPreference + ", Assistance: " + specialAssistance);
     }
 
     public void proceedToSeatSelection(Booking booking) {
