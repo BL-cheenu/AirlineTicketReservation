@@ -138,6 +138,10 @@ public class Main {
                 
                 bookingService.proceedToPayment(booking);
                 booking.printState(); // State: PAYMENT_PENDING
+
+                System.out.println("\n--- UC11: Booking Confirmation ---");
+                bookingService.confirmBooking(booking);
+                booking.printState(); // State: CONFIRMED
             } else {
                 System.out.println("No flights found or no user logged in to test booking.");
             }

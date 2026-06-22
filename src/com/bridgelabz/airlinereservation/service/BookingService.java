@@ -57,4 +57,18 @@ public class BookingService {
     public void proceedToPayment(Booking booking) {
         booking.nextState();
     }
+
+    // UC11: Booking Confirmation
+    public void confirmBooking(Booking booking) {
+        booking.nextState(); // Transition to CONFIRMED
+        String eTicket = "ETK" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+        booking.seteTicketNumber(eTicket);
+        
+        // Reduce available seats (assuming Economy by default for this simulation)
+        int currentSeats = booking.getFlight().getAvailableSeats().getOrDefault(TravelClass.ECONOMY, 0);
+        booking.getFlight().getAvailableSeats().put(TravelClass.ECONOMY, currentSeats - booking.getPassengers().size());
+        
+        System.out.println("Booking confirmed! E-Ticket: " + eTicket);
+        System.out.println("Notifications sent to user: " + booking.getBookedBy().getEmail());
+    }
 }

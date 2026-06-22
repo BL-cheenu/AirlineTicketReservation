@@ -51,6 +51,10 @@ public class Booking {
     public BookingState getState() { return state; }
     public void setState(BookingState state) { this.state = state; }
     public LocalDateTime getBookingExpiry() { return bookingExpiry; }
+    
+    private String eTicketNumber;
+    public String geteTicketNumber() { return eTicketNumber; }
+    public void seteTicketNumber(String eTicketNumber) { this.eTicketNumber = eTicketNumber; }
 
     @Override
     public String toString() {
