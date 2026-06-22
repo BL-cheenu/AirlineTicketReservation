@@ -123,8 +123,15 @@ public class Main {
                 bookingService.proceedToPassengerDetails(booking);
                 booking.printState(); // State: PASSENGER_DETAILS
                 
-                PassengerProfile pax = new PassengerProfile("PAX1", "John Doe", LocalDate.of(1990,1,1), "P123");
-                bookingService.addPassengerToBooking(booking, pax);
+                System.out.println("Adding new passenger...");
+                PassengerProfile pax1 = new PassengerProfile("PAX1", "John Doe", LocalDate.of(1990,1,1), "P123");
+                pax1.setFrequentFlyerNumber("FF12345");
+                bookingService.addPassengerToBooking(booking, pax1);
+                bookingService.updatePassengerPreferences(booking, "PAX1", "Vegetarian", "Wheelchair");
+                
+                System.out.println("Linking existing profile to booking...");
+                // Note: In UC2 we added P001 to the user profile
+                bookingService.linkExistingPassengerProfile(booking, userService.getLoggedInUser(), "P001");
                 
                 bookingService.proceedToSeatSelection(booking);
                 booking.printState(); // State: SEAT_SELECTED
