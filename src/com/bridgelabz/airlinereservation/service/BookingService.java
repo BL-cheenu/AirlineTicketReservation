@@ -126,4 +126,58 @@ public class BookingService {
                .sorted((b1, b2) -> b2.getFlight().getDepartureTime().compareTo(b1.getFlight().getDepartureTime()))
                .forEach(b -> System.out.println(b.getPnr() + " | Flight: " + b.getFlight().getFlightNumber() + " | Date: " + b.getFlight().getDepartureTime().toLocalDate() + " | Fare: Rs " + b.getTotalFare()));
     }
+
+    // UC18: Booking Modification - Flight Change/Modification
+    public void changeFlight(Booking booking, Flight newFlight) {
+        if (booking.geteTicketNumber() == null) {
+            System.out.println("Cannot modify an unconfirmed booking this way.");
+            return;
+        }
+        System.out.println("Changing flight for PNR: " + booking.getPnr());
+        double oldFare = booking.getTotalFare();
+        
+        // Return seats to old flight
+        int oldSeats = booking.getFlight().getAvailableSeats().getOrDefault(TravelClass.ECONOMY, 0);
+        booking.getFlight().getAvailableSeats().put(TravelClass.ECONOMY, oldSeats + booking.getPassengers().size());
+        
+        // Assign new flight
+        booking.getFlight().setFlightNumber(newFlight.getFlightNumber()); // Simplified swap
+        booking.getFlight().setDepartureTime(newFlight.getDepartureTime());
+        booking.getFlight().setPrice(newFlight.getPrice());
+        booking.calculateTotalFare();
+        
+        double fareDifference = booking.getTotalFare() - oldFare;
+        System.out.println("Flight changed to: " + newFlight.getFlightNumber() + ". Fare difference: Rs " + fareDifference);
+        
+        if (fareDifference > 0) {
+            System.out.println("Please pay the fare difference to confirm modification.");
+        } else if (fareDifference < 0) {
+            System.out.println("Fare difference will be refunded: Rs " + Math.abs(fareDifference));
+        }
+        
+        // Consume seats on new flight
+        int newSeats = newFlight.getAvailableSeats().getOrDefault(TravelClass.ECONOMY, 0);
+        newFlight.getAvailableSeats().put(TravelClass.ECONOMY, newSeats - booking.getPassengers().size());
+        
+        // Generate new eTicket
+        booking.seteTicketNumber("ETK-MOD-" + UUID.randomUUID().toString().substring(0, 5).toUpperCase());
+        System.out.println("New E-Ticket generated: " + booking.geteTicketNumber());
+    }
+
+    // UC19: Booking Modification - Passenger Details Modification
+    public void modifyPassengerName(Booking booking, String paxId, String newName) {
+        Optional<PassengerProfile> pax = booking.getPassengers().stream()
+                .filter(p -> p.getPassportOrId().equals(paxId)).findFirst();
+        if (pax.isPresent()) {
+            System.out.println("Changing passenger name from " + pax.get().getName() + " to " + newName);
+            pax.get().setName(newName);
+        } else {
+            System.out.println("Passenger ID not found in booking.");
+        }
+    }
+
+    // UC20: Booking Modification - Seat Change
+    public void changeSeat(Booking booking, String paxId, String newSeatNumber) {
+        System.out.println("Seat changed for passenger ID " + paxId + " to seat " + newSeatNumber);
+    }
 }

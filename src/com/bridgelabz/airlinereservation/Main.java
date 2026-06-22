@@ -162,6 +162,18 @@ public class Main {
                 System.out.println("\n--- UC13: Booking History Management ---");
                 bookingService.displayBookingHistory(userService.getLoggedInUser());
 
+                System.out.println("\n--- UC18: Booking Modification - Flight Change ---");
+                Map<TravelClass, Integer> altSeats = new java.util.HashMap<>();
+                altSeats.put(TravelClass.ECONOMY, 50);
+                Flight alternateFlight = new Flight("FL999", "AlternateAir", "NYC", "LAX", LocalDate.now().plusDays(2).atTime(15,0), LocalDate.now().plusDays(2).atTime(18,0), 180, 6000.0, 100, altSeats);
+                bookingService.changeFlight(booking, alternateFlight);
+
+                System.out.println("\n--- UC19: Booking Modification - Passenger Details ---");
+                bookingService.modifyPassengerName(booking, "P123", "Johnathan Doe");
+
+                System.out.println("\n--- UC20: Booking Modification - Seat Change ---");
+                bookingService.changeSeat(booking, "P123", "14B");
+
                 System.out.println("\n--- UC17: Refund Processing ---");
                 String refundTxnId = paymentService.processRefund(booking, true);
                 System.out.println("Refund generated: " + refundTxnId);

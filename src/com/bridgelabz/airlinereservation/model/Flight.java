@@ -44,13 +44,16 @@ public class Flight {
 
     // Getters and Setters
     public String getFlightNumber() { return flightNumber; }
+    public void setFlightNumber(String flightNumber) { this.flightNumber = flightNumber; }
     public String getAirline() { return airline; }
     public String getSourceAirport() { return sourceAirport; }
     public String getDestinationAirport() { return destinationAirport; }
     public LocalDateTime getDepartureTime() { return departureTime; }
+    public void setDepartureTime(LocalDateTime departureTime) { this.departureTime = departureTime; }
     public LocalDateTime getArrivalTime() { return arrivalTime; }
     public int getDurationMinutes() { return durationMinutes; }
     public double getPrice() { return price; }
+    public void setPrice(double price) { this.price = price; }
     public int getStops() { return stops; }
     public FlightStatus getStatus() { return status; }
     public void setStatus(FlightStatus status) { this.status = status; }
