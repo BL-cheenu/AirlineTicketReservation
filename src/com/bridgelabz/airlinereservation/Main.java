@@ -174,9 +174,15 @@ public class Main {
                 System.out.println("\n--- UC20: Booking Modification - Seat Change ---");
                 bookingService.changeSeat(booking, "P123", "14B");
 
-                System.out.println("\n--- UC17: Refund Processing ---");
-                String refundTxnId = paymentService.processRefund(booking, true);
-                System.out.println("Refund generated: " + refundTxnId);
+                System.out.println("\n--- UC21, UC22, UC23: Booking Cancellation ---");
+                com.bridgelabz.airlinereservation.service.CancellationService cancellationService = new com.bridgelabz.airlinereservation.service.CancellationService(paymentService);
+                cancellationService.displayCancellationPolicy();
+                
+                // Test Partial Cancellation first
+                cancellationService.cancelPartialBooking(booking, "P123");
+                
+                // Test Full Cancellation
+                cancellationService.cancelFullBooking(booking);
             } else {
                 System.out.println("No flights found or no user logged in to test booking.");
             }
